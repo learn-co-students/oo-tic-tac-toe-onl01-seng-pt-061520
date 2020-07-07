@@ -4,18 +4,18 @@ class TicTacToe
   end
   
   WIN_COMBINATIONS = [
-    [1,2,3], [1,4,7], [2,5,8],
-    [4,5,6], [3,6,9], [1,5,9],
-    [7,8,9], [3,5,7]
+    [0,1,2], [0,3,6], [1,4,7],
+    [3,4,5], [2,5,8], [0,4,8],
+    [6,7,8], [2,4,6]
     
     ]
     
     def display_board
-      puts "#{board[1]} | #{board[2]} | #{board[3]} "
+      puts "#{board[0]} | #{board[1]} | #{board[2]} "
       puts "------------------"
-      puts "#{board[4]} | #{board[5]} | #{board[6]} "
+      puts "#{board[3]} | #{board[4]} | #{board[5]} "
       puts "------------------"
-      puts "#{board[7]} | #{board[8]} | #{board[9]} "
+      puts "#{board[6]} | #{board[7]} | #{board[8]} "
     end
     
     def input_to_index(input)
@@ -36,7 +36,7 @@ class TicTacToe
     
     def valid_move?(position)
       position = position.to_i - 1
-      if position.between?(1,9) && !position_taken?(position)
+      if position.between?(0,8) && !position_taken?(position)
         true
       else
         false
