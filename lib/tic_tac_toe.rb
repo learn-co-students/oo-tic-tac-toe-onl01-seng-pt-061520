@@ -1,5 +1,6 @@
 require "pry"
 class TicTacToe
+
   def initialize(board = nil)
     @board = board || Array.new(9, " ")
   end
@@ -25,11 +26,10 @@ class TicTacToe
    end
 
    def input_to_index(input)
-     index = 0
-     index = input.to_i - 1
+     input.to_i - 1
    end
 
-   def move(board_position, player_token="X")
+   def move(board_position, player_token)
      #binding.pry
      @board[board_position] = player_token
    end
@@ -37,39 +37,32 @@ class TicTacToe
    def position_taken?(index)
      #check to see if position is occupied or not (runs after #input_to_index)
      #binding.pry
-     @board[index] == "X" || @board[index] == "O" ? true : false
+     @board[index] == "X" || @board[index] == "O"
      #return false if position is not taken else true if taken
    end
 
    def valid_move?(position)
      #accetps a position to check and return true if valid false or nill if not
      # valid_move - present on the game board & not already filled with token
-     position.between?(0,8)
-     @board[position] == " " ? true : false
+     position.between?(0,8) && !position_taken?(position)
    end
 
    def turn
-     over?
      #ask the user for their move by specifying a position between 1-9
      #puts "Choose a postion between 1-9"
      #receive the user's input
      input = gets.strip
-     while !input.match?(/[1-9]/)
-        #puts "Choose a postion between 1-9"
-       input = gets.strip
-     end
      #translate that input into an index values
-     input = input_to_index(input)
+     index = input_to_index(input)
      #if the move is valid, make the move and display the display the board
      #if the move is invalid ask for a new move
-     if valid_move?(input)
-       move(input, current_player)
+     if valid_move?(index)
+       move(index, current_player)
        self.display_board
      else
-      #puts "Choose a postion between 1-9"
-      input = gets.strip
+      #if invalid re-run method
+      self.turn
      end
-     over?
    end
 
    def turn_count
@@ -78,26 +71,16 @@ class TicTacToe
    end
 
    def current_player
-     self.turn_count % 2 == 0 ? "X" : "O"
+     self.turn_count.even? ? "X" : "O"
    end
 
    def won?
      # return false/nill if there is no win combo
      # return winning combo as an array if there is a one
      # use WIN_COMBINATIONS
-     winning_array = []
-     WIN_COMBINATIONS.each do |num_array|
-       if num_array.all? {|num| @board[num] == "X"}
-         winning_array = num_array
-       elsif num_array.all? {|num| @board[num] == "O"}
-         winning_array = num_array
-       else
-         false
-       end
+     WIN_COMBINATIONS.detect do |num_array|
+       @board[num_array[0]] == @board[num_array[1]] && @board[num_array[1]] == @board[num_array[2]] && position_taken?(num_array[1])
        #binding.pry
-     end
-     if winning_array.count > 0
-       winning_array
      end
    end
 
@@ -109,48 +92,33 @@ class TicTacToe
    def draw?
      # returns true if the board is full and has not been won
      # false if the board is won & false if the board is neither won nor full
-     if full? && !won?
-       true
-     elsif !won?
-       false
-     elsif !won? || !full?
-       false
-     end
+     full? && !won?
    end
 
    def over?
      # reutns true if the board has been won or is full, aka draw
      # detect{ |i| @board is full or won } #return true
-     won? == true || full? == true ? true : false
+     won? || draw?
    end
 
    def winner
      # given a winning @board the #winner should return the token "X" or "O"
      # that has won the game
-     if won?.kind_of?(Array)
+     if winning_array = won?
        # binding.pry
-       token = ""
-       if won?.all? {|i| @board[i] == "X" }
-         token = "X"
-       elsif won?.all? {|i| @board[i] == "O"}
-         token = "O"
-       end
+       @board[winning_array[1]]
      end
    end
 
    def play
      # until the game is over
-     if over? == false
-       self.turn
-       # binding.pry
-     end
-     if winner == "X" || winner == "O"
+     self.turn until over?
+     # binding.pry
+     if winner
        puts "Congratulations #{winner}!"
-     elsif draw? == true
+     else
        puts "Cat's Game!"
      end
-
-     #binding.pry
      #   take turns
      # end
      #
