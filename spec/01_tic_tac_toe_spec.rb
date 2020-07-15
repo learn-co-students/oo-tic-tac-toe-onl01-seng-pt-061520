@@ -18,7 +18,7 @@ describe './lib/tic_tac_toe.rb' do
         expect(TicTacToe::WIN_COMBINATIONS).to include_array([6,7,8])
         expect(TicTacToe::WIN_COMBINATIONS).to include_array([0,3,6])
         expect(TicTacToe::WIN_COMBINATIONS).to include_array([1,4,7])
-        expect(TicTacToe::WIN_COMBINATIONS).to include_array([2,5,8])
+        expect(TicTacToe::WIN_COMBINATIONS).to include_array([2,5, 8])
         expect(TicTacToe::WIN_COMBINATIONS).to include_array([0,4,8])
         expect(TicTacToe::WIN_COMBINATIONS).to include_array([6,4,2])
       end
