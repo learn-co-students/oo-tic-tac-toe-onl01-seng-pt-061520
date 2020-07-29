@@ -71,14 +71,16 @@ def display_board
   end
 
   def turn
+    puts "Please enter 1-9"
      position = gets
     index = input_to_index(position)
+    token = current_player
     if valid_move?(index) == true
-      move(index, current_player)
+      move(index, token)
+      display_board
     else
-      puts "invalid"
+      puts "try again"
     end
-    display_board
   end
 
 
