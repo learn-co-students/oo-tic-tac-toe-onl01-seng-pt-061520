@@ -34,23 +34,14 @@ def display_board
  end
 
  def position_taken?(index)
-   if @board[index] == "X" || @board[index] == "O"
-     true
-   else
-     false
-   end
+   @board[index] == "X" || @board[index] == "O"
   end
 #  binding.pry
 
   def valid_move?(index)
-    if index == (0...9)
-      true
-    elsif @board[index] == " "
-      true
-    else
-      false
-    end
+    !position_taken?(index) && index.between?(0,8)
   end
+
 
   def turn_count
     counter = 0
@@ -61,9 +52,7 @@ def display_board
   end
 
   def current_player
-    if turn_count == 0
-      return "X"
-    elsif turn_count.even? == true
+    if turn_count.even?
       return "X"
     else
       return "O"
@@ -71,19 +60,61 @@ def display_board
   end
 
   def turn
-    puts "Please enter 1-9"
-     position = gets
-    index = input_to_index(position)
-    token = current_player
-    if valid_move?(index) == true
+    puts "Please enter a number (1-9):"
+    user_input = gets.strip
+    index = input_to_index(user_input)
+    if valid_move?(index)
+      token = current_player
       move(index, token)
-      display_board
     else
-      puts "try again"
+      turn
+    end
+    display_board
+  end
+
+  def won?
+    WIN_COMBINATIONS.detect do |array|
+      @board[array[0]] == @board[array[1]] && @board[array[0]] == @board[array[2]] && position_taken?(array[0])
     end
   end
 
+  def full?
+    @board.all? do |space|
+      space == "X" || space == "O"
+    end
+  end
 
+  def draw?
+    full? && !won?
+  end
 
+  def over?
+    draw? || won?
+  end
+
+  def winner
+    WIN_COMBINATIONS.detect do |array|
+      if @board[array[0]] == "X" && @board[array[1]] == "X" && @board [array[2]] == "X"
+        return "X"
+      elsif @board[array[0]] == "O" && @board[array[1]] == "O" && @board [array[2]] == "O"
+        return "O"
+      else
+        nil
+      end
+    end
+  end
+
+  def play
+    until over?
+    turn
+    end
+    # binding.pry
+        if won?
+        #  binding.pry
+          puts "Congratulations #{winner}!"
+        elsif draw?
+          puts "Cat's Game!"
+        end
+  end
 
 end
